@@ -6,11 +6,12 @@ public:
         for(auto it : nums) {
             st.insert(it);
         }
-        nums.clear();
+        
+        int indx = 0;
         for(auto it : st) {
-            nums.push_back(it);
-            ++cnt;
+            nums[indx] = it;
+            indx++;
         }
-        return cnt;
+        return indx;
     }
 };
