@@ -2,6 +2,9 @@ class Solution {
 public:
     int totalFruit(vector<int>& fruits) {
         int n=fruits.size();
+        if(n==0){
+            return 0;
+        }
         int i=0,j=0;
         int ans=0;
         unordered_map<int,int> mp;
@@ -29,8 +32,9 @@ public:
                 ++j;
             }
         }
-        if(mp.size()==0 || mp.size()==1){
-            return mp.begin()->second;
+        if(mp.size()==1){
+            auto it = mp.begin();
+            return it->second;
         }
         return ans;
     }
