@@ -23,6 +23,9 @@ public:
                 ++j;
             }
         }
-        return maxi!=LLONG_MIN?maxi:0;
+        if(maxi != LLONG_MIN)
+            return maxi;
+        else
+            return 0;
     }
 };
