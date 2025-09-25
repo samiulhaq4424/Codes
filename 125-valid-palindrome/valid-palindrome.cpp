@@ -17,10 +17,8 @@ public:
         // }
         string str = "";
         for (auto it : s) {
-            if (it >= 'a' && it <= 'z')
+            if (it >= 'a' && it <= 'z' || it >= '0' && it <= '9')
                 str += it;
-            if(it >= '0' && it <= '9')
-                str+=it;
             if (it >= 'A' && it <= 'Z')
                 str += (char)('a' + (it - 'A'));
         }
