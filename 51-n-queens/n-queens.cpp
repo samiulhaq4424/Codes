@@ -30,9 +30,9 @@ public:
         for (int i = 0; i < n; i++) {
             board.push_back(str);
         }
-        vector<int> leftRow(n + 1, 0);
-        vector<int> lowerDiagonal(2 * n + 1, 0);
-        vector<int> upperDiagonal(2 * n + 1, 0);
+        vector<int> leftRow(n, 0);
+        vector<int> lowerDiagonal(2 * n - 1, 0);
+        vector<int> upperDiagonal(2 * n - 1, 0);
         helper(0, n, board, leftRow, lowerDiagonal, upperDiagonal, ans);
         return ans;
     }
