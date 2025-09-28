@@ -13,7 +13,7 @@ public:
         }
     }
     vector<vector<int>> permute(vector<int>& nums) {
-        sort(nums.begin(),nums.end());
+        // sort(nums.begin(),nums.end());
         vector<vector<int>> ans;
         int n = nums.size();
         helper(0, n, nums, ans);
