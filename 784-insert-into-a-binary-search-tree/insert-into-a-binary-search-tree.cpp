@@ -23,7 +23,7 @@ public:
                 } else {
                     TreeNode* node = new TreeNode(data);
                     cur->left = node;
-                    return root;
+                    break;
                 }
             }
             else if(cur->val < data){
@@ -32,7 +32,7 @@ public:
                 } else {
                     TreeNode* node = new TreeNode(data);
                     cur->right = node;
-                    return root;
+                    break;
                 }
             }
         }
