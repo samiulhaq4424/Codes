@@ -26,7 +26,7 @@ public:
             for(auto itr : adj[u]){
                 int v = itr.first;
                 int wt = itr.second;
-                if(dis + 1LL * wt < dist[v]){
+                if(dis + wt < dist[v]){
                     ways[v]=ways[u];
                     dist[v]=dis+wt;
                     pq.push({dist[v],v});
