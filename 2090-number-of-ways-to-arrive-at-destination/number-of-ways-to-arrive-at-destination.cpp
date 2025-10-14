@@ -1,7 +1,7 @@
 class Solution {
 public:
     int countPaths(int n, vector<vector<int>>& roads) {
-        int mod = (int)(1e9+7);
+        int mod = 1e9+7;
         vector<vector<pair<int,int>>> adj(n);
         for(auto it : roads){
             int u = it[0];
