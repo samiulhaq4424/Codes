@@ -1,6 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class DisjointSet {
 private:
     vector<int> parent, size;
@@ -8,22 +5,26 @@ private:
 public:
     DisjointSet(int n) {
         parent.resize(n);
-        size.resize(n, 1);
+        size.resize(n);
         for (int i = 0; i < n; i++) {
             parent[i] = i;
+            size[i] = 1;
         }
     }
 
     int findParent(int u) {
-        if (u == parent[u]) return u;
+        if (u == parent[u]) {
+            return u;
+        }
         return parent[u] = findParent(parent[u]);
     }
 
     void unionBySize(int u, int v) {
         int ulp_u = findParent(u);
         int ulp_v = findParent(v);
-        if (ulp_u == ulp_v) return;
-
+        if(ulp_u == ulp_v){
+            return;
+        }
         if (size[ulp_u] >= size[ulp_v]) {
             parent[ulp_v] = ulp_u;
             size[ulp_u] += size[ulp_v];
@@ -61,7 +62,6 @@ public:
                 ++numOfComp;
             }
         }
-
         return numOfStones - numOfComp;
     }
 };
