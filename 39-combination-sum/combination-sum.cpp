@@ -1,27 +1,29 @@
 class Solution {
 public:
-    void helper(int ind, int n, int target, vector<int> &temp, vector<int> &candidates, vector<vector<int>> &ans) {
-        if(ind==n){
-            if(target == 0){
-                ans.push_back(temp);
-            }
+    public:
+    vector<vector<int>> r;
+    vector<int> t;
+
+    void dfs(vector<int>& c, int tgt, int idx) {
+        if (tgt == 0) {
+            r.push_back(t);
             return;
         }
-
-        if(candidates[ind]<=target){
-            temp.push_back(candidates[ind]);
-            helper(ind, n, target-candidates[ind], temp, candidates, ans);
-            temp.pop_back();
+        for (int i = idx; i < c.size(); ++i) {
+            if (c[i] <= tgt) {
+                t.push_back(c[i]);
+                dfs(c, tgt - c[i], i);
+                t.pop_back();
+            }
         }
-        helper(ind+1, n, target, temp, candidates, ans);
     }
-
 
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        vector<vector<int>> ans;
-        vector<int> temp;
-        int n = candidates.size();
-        helper(0,n,target,temp,candidates,ans);
-        return ans;
+        r.clear();
+        t.clear();
+        sort(candidates.begin(), candidates.end());
+        dfs(candidates, target, 0);
+        return r;
     }
+
 };
