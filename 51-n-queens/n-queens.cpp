@@ -1,39 +1,33 @@
 class Solution {
-public:
-    void helper(int col, int n, vector<string>& board, vector<int>& leftRow,
-                vector<int>& lowerDiagonal, vector<int>& upperDiagonal,
-                vector<vector<string>>& ans) {
-        if (col == n) {
+    public:
+    vector<vector<string>> ans;
+    int n;
+
+    void solve(int row, int col_mask, int diag1_mask, int diag2_mask, vector<string>& board) {
+        if (row == n) {
             ans.push_back(board);
             return;
         }
-        for (int row = 0; row < n; row++) {
-            if (leftRow[row] == 0 && lowerDiagonal[col + row] == 0 &&
-                upperDiagonal[(n - 1) + col - row] == 0) {
-                leftRow[row] = 1;
-                lowerDiagonal[col + row] = 1;
-                upperDiagonal[(n - 1) + col - row] = 1;
-                board[row][col] = 'Q';
-                helper(col + 1, n, board, leftRow, lowerDiagonal,
-                       upperDiagonal, ans);
-                board[row][col] = '.';
-                leftRow[row] = 0;
-                lowerDiagonal[col + row] = 0;
-                upperDiagonal[(n - 1) + col - row] = 0;
-            }
+
+        int safe_spots = ((1 << n) - 1) & ~(col_mask | diag1_mask | diag2_mask);
+        while (safe_spots > 0) {
+            int p = safe_spots & -safe_spots;
+            safe_spots -= p;
+            
+            int c = __builtin_ctz(p);
+            board[row][c] = 'Q';
+            
+            solve(row + 1, col_mask | p, (diag1_mask | p) << 1, (diag2_mask | p) >> 1, board);
+            
+            board[row][c] = '.';
         }
     }
-    vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> ans;
-        vector<string> board;
-        string str(n, '.');
-        for (int i = 0; i < n; i++) {
-            board.push_back(str);
-        }
-        vector<int> leftRow(n, 0);
-        vector<int> lowerDiagonal(2 * n - 1, 0);
-        vector<int> upperDiagonal(2 * n - 1, 0);
-        helper(0, n, board, leftRow, lowerDiagonal, upperDiagonal, ans);
+
+    vector<vector<string>> solveNQueens(int num) {
+        n = num;
+        ans.clear();
+        vector<string> board(n, string(n, '.'));
+        solve(0, 0, 0, 0, board);
         return ans;
     }
 };
