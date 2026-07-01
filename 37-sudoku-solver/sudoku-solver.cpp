@@ -1,41 +1,50 @@
 class Solution {
 public:
-    bool isPossible(int i, int j, int n, char ch, vector<vector<char>>& board) {
-        for (int k = 0; k < n; k++) {
-            if (board[i][k] == ch) {
-                return false;
-            }
-            if (board[k][j] == ch) {
-                return false;
-            }
-            if (board[3 * (i / 3) + (k / 3)][3 * (j / 3) + (k % 3)] == ch) {
-                return false;
-            }
+    int r[9] = {0};
+    int c[9] = {0};
+    int b[9] = {0};
+
+    bool dfs(vector<vector<char>>& g, int i, int j) {
+        if (i == 9) return true;
+        if (j == 9) return dfs(g, i + 1, 0);
+        if (g[i][j] != '.') return dfs(g, i, j + 1);
+
+        int idx = (i / 3) * 3 + j / 3;
+        int m = ~(r[i] | c[j] | b[idx]) & 0x1FF;
+
+        while (m > 0) {
+            int ls = m & -m;
+            m -= ls;
+            int num = __builtin_ctz(ls);
+
+            g[i][j] = '1' + num;
+            r[i] |= ls;
+            c[j] |= ls;
+            b[idx] |= ls;
+
+            if (dfs(g, i, j + 1)) return true;
+
+            g[i][j] = '.';
+            r[i] &= ~ls;
+            c[j] &= ~ls;
+            b[idx] &= ~ls;
         }
-        return true;
+
+        return false;
     }
 
-    bool helper(int n, vector<vector<char>>& board) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (board[i][j] == '.') {
-                    for (char ch = '1'; ch <= '9'; ch++) {
-                        if (isPossible(i, j, n, ch, board) == true) {
-                            board[i][j] = ch;
-                            if (helper(n, board) == true) {
-                                return true;
-                            }
-                            board[i][j] = '.';
-                        }
-                    }
-                    return false;
+    void solveSudoku(vector<vector<char>>& board) {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if (board[i][j] != '.') {
+                    int v = 1 << (board[i][j] - '1');
+                    int idx = (i / 3) * 3 + j / 3;
+                    r[i] |= v;
+                    c[j] |= v;
+                    b[idx] |= v;
                 }
             }
         }
-        return true;
-    }
-    void solveSudoku(vector<vector<char>>& board) {
-        int n = board.size();
-        helper(n, board);
+        dfs(board, 0, 0);
     }
 };
