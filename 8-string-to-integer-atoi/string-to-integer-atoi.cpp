@@ -1,31 +1,38 @@
 class Solution {
 public:
     int myAtoi(string s) {
-        int i = 0, n = s.size();
-
+        int i = 0;
+        int n = s.length();
+        
         while (i < n && s[i] == ' ') {
             i++;
         }
-
+        
+        if (i == n) {
+            return 0;
+        }
+        
         int sign = 1;
-        if (i < n && (s[i] == '+' || s[i] == '-')) {
-            if (s[i] == '-') sign = -1;
+        if (s[i] == '-') {
+            sign = -1;
+            i++;
+        } else if (s[i] == '+') {
             i++;
         }
-
+        
         long long result = 0;
-
-        while (i < n && isdigit(s[i])) {
-            int digit = s[i] - '0';
-
-            if (result > (INT_MAX - digit) / 10) {
-                return sign == 1 ? INT_MAX : INT_MIN;
+        while (i < n && s[i] >= '0' && s[i] <= '9') {
+            result = result * 10 + (s[i] - '0');
+            
+            if (sign == 1 && result > INT_MAX) {
+                return INT_MAX;
             }
-
-            result = result * 10 + digit;
+            if (sign == -1 && -result < INT_MIN) {
+                return INT_MIN;
+            }
             i++;
         }
-
+        
         return sign * result;
     }
 };
