@@ -11,23 +11,26 @@
  */
 class Solution {
 public:
-    bool helper(TreeNode* root, long lb, long ub){
-        if(!root){
-            return true;
+    void traverse(TreeNode* root, vector<int>& elements) {
+        if (root == nullptr) {
+            return;
         }
-        if(root->val <= lb || root->val >= ub){
-            return false;
-        }
-
-        return helper(root->left,lb,root->val) && helper(root->right,root->val,ub);
+        traverse(root->left, elements);
+        elements.push_back(root->val);
+        traverse(root->right, elements);
     }
+
     bool isValidBST(TreeNode* root) {
-        if(!root || !root->left && !root->right){
+        if (root == nullptr) {
             return true;
         }
-        long lb = LONG_MIN;
-        long ub = LONG_MAX;
-        bool ans = helper(root,lb,ub);
-        return ans;
+        vector<int> sortedVals;
+        traverse(root, sortedVals);
+        for (size_t i = 0; i < sortedVals.size() - 1; i++) {
+            if (sortedVals[i] >= sortedVals[i + 1]) {
+                return false;
+            }
+        }
+        return true;
     }
 };
