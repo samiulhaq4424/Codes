@@ -12,22 +12,28 @@
 class Solution {
 public:
     void flatten(TreeNode* root) {
-        if(!root){
+        if (root == nullptr) {
             return;
         }
-        TreeNode* prev = NULL;
-        TreeNode* cur = root;
-        while(cur){
-            if(cur->left != NULL){
-                prev = cur->left;
-                while(prev->right){
-                    prev = prev->right;
-                }
-                prev->right = cur->right;
-                cur->right = cur->left;
-                cur->left = NULL;
-            }
-            cur = cur->right;
+
+        vector<TreeNode*> nodes;
+        preorder(root, nodes);
+
+        for (size_t i = 0; i < nodes.size() - 1; i++) {
+            nodes[i]->left = nullptr;
+            nodes[i]->right = nodes[i + 1];
         }
+
+        nodes.back()->left = nullptr;
+        nodes.back()->right = nullptr;
+    }
+
+    void preorder(TreeNode* node, vector<TreeNode*>& nodes) {
+        if (node == nullptr) {
+            return;
+        }
+        nodes.push_back(node);
+        preorder(node->left, nodes);
+        preorder(node->right, nodes);
     }
 };
