@@ -1,15 +1,17 @@
 class Solution {
 public:
     int numTrees(int n) {
-        vector<int> dp(n + 1, 0);
-        dp[0] = 1;
-        for (int k = 1; k <= n; ++k) {
-            int result = 0;
-            for (int i = 0; i < k; ++i) {
-                result += dp[i] * dp[k - 1 - i];
-            }
-            dp[k] = result;
+        if (n == 0 || n == 1) {
+            return 1;
         }
-        return dp[n];
+        int count[100] = {0};
+        count[0] = 1;
+        count[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                count[i] = count[i] + (count[j - 1] * count[i - j]);
+            }
+        }
+        return count[n];
     }
 };
