@@ -11,26 +11,29 @@
  */
 class Solution {
 public:
-    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
-        vector<vector<int>> result;
-        vector<int> path;
-        dfs(root, targetSum, path, result);
-        return result;
-    }
-    
-private:
-    void dfs(TreeNode* node, int targetSum, vector<int>& path, vector<vector<int>>& result) {
-        if (!node) return;
-        
-        path.push_back(node->val);
-        
-        if (!node->left && !node->right && node->val == targetSum) {
-            result.push_back(path);
+    vector<vector<int>> result;
+    vector<int> currentPath;
+
+    void findPaths(TreeNode* root, int targetSum) {
+        if (root == nullptr) {
+            return;
         }
-        
-        dfs(node->left, targetSum - node->val, path, result);
-        dfs(node->right, targetSum - node->val, path, result);
-        
-        path.pop_back();
+        currentPath.push_back(root->val);
+        if (root->left == nullptr && root->right == nullptr) {
+            if (targetSum == root->val) {
+                result.push_back(currentPath);
+            }
+        } else {
+            findPaths(root->left, targetSum - root->val);
+            findPaths(root->right, targetSum - root->val);
+        }
+        currentPath.pop_back();
+    }
+
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        result.clear();
+        currentPath.clear();
+        findPaths(root, targetSum);
+        return result;
     }
 };
