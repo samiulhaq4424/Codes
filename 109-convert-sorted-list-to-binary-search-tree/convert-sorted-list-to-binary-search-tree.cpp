@@ -21,25 +21,38 @@
  */
 class Solution {
 public:
-    TreeNode* helper(ListNode *&head, int n){
-        if(n==0){
-            return NULL;
+    TreeNode* sortedListToBST(ListNode* head) {
+        if (head == nullptr) {
+            return nullptr;
+        }
+        if (head->next == nullptr) {
+            return new TreeNode(head->val);
         }
 
-        TreeNode *node = new TreeNode();
-        node->left = helper(head,n/2);
-        node->val = head->val;
-        head = head->next;
-        node->right = helper(head,(n-1)/2);
-        return node;
-    }
-    TreeNode* sortedListToBST(ListNode* head) {
-        int n = 0;
-        ListNode *cur = head;
-        while(cur){
-            ++n;
-            cur = cur->next;
+        ListNode* slow = head;
+        ListNode* fast = head;
+        ListNode* prev = nullptr;
+
+        while (fast != nullptr && fast->next != nullptr) {
+            prev = slow;
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        return helper(head,n);
+
+        if (prev != nullptr) {
+            prev->next = nullptr;
+        }
+
+        TreeNode* root = new TreeNode(slow->val);
+
+        if (slow != head) {
+            root->left = sortedListToBST(head);
+        } else {
+            root->left = nullptr;
+        }
+        
+        root->right = sortedListToBST(slow->next);
+
+        return root;
     }
 };
