@@ -1,38 +1,42 @@
 class Solution {
 public:
-    bool isNumber(string input) {
-        return validateNumber(input);
-    }
+    bool isNumber(string s) {
+        int i = 0;
+        int n = s.length();
 
-private:
-    bool validateNumber(const string& input) {
-        if (input.empty()) return false;
+        bool seenDigit = false;
+        bool seenDot = false;
+        bool seenE = false;
 
-        size_t pos = 0;
-        if (input[pos] == '+' || input[pos] == '-') pos++;
-
-        bool hasDigitsBefore = false;
-        while (pos < input.size() && isdigit(input[pos])) {
-            hasDigitsBefore = true;
-            pos++;
+        if (i < n && (s[i] == '+' || s[i] == '-')) {
+            i++;
         }
 
-        bool hasDigitsAfter = false;
-        if (pos < input.size() && input[pos] == '.') {
-            pos++;
-            while (pos < input.size() && isdigit(input[pos])) {
-                hasDigitsAfter = true;
-                pos++;
+        while (i < n) {
+            char c = s[i];
+
+            if (c >= '0' && c <= '9') {
+                seenDigit = true;
+            } else if (c == '.') {
+                if (seenDot || seenE) {
+                    return false;
+                }
+                seenDot = true;
+            } else if (c == 'e' || c == 'E') {
+                if (seenE || !seenDigit) {
+                    return false;
+                }
+                seenE = true;
+                seenDigit = false;
+                if (i + 1 < n && (s[i + 1] == '+' || s[i + 1] == '-')) {
+                    i++;
+                }
+            } else {
+                return false;
             }
+            i++;
         }
 
-        if (pos < input.size() && (input[pos] == 'e' || input[pos] == 'E')) {
-            pos++;
-            if (pos < input.size() && (input[pos] == '+' || input[pos] == '-')) pos++;
-            if (pos >= input.size() || !isdigit(input[pos])) return false;
-            while (pos < input.size() && isdigit(input[pos])) pos++;
-        }
-
-        return pos == input.size() && (hasDigitsBefore || hasDigitsAfter);
+        return seenDigit;
     }
 };
