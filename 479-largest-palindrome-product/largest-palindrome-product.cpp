@@ -1,22 +1,28 @@
 class Solution {
 public:
-    int largestPalindrome(int digits) {
-        if (digits == 1) return 9;
-        long long upper = pow(10, digits) - 1;
-        long long lower = upper / 10;
+    int largestPalindrome(int n) {
+        if (n == 1) return 9;
 
-        for (long long num = upper - 1; num > lower; num--) {
-            string forward = to_string(num);
-            string palindrome = forward;
-            reverse(palindrome.begin(), palindrome.end());
-            long long product = stoll(forward + palindrome);
-            
-            for (long long factor = upper; factor * factor >= product; factor--) {
-                if (product % factor == 0) {
-                    return product % 1337;
+        long long mx = 1;
+        for (int i = 0; i < n; i++) mx *= 10;
+        long long hi = mx - 1;
+        long long lo = mx / 10;
+
+        for (long long i = hi; i >= lo; i--) {
+            long long p = i;
+            long long t = i;
+            while (t > 0) {
+                p = p * 10 + (t % 10);
+                t /= 10;
+            }
+
+            for (long long j = hi; j * j >= p; j--) {
+                if (p % j == 0) {
+                    return p % 1337;
                 }
             }
         }
+
         return 0;
     }
 };
