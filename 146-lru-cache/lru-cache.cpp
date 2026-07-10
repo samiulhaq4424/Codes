@@ -1,74 +1,36 @@
 class LRUCache {
-private:
-    struct Node {
-        int key, value;
-        Node* prev;
-        Node* next;
-        Node(int k = 0, int v = 0) : key(k), value(v), prev(nullptr), next(nullptr) {}
-    };
-    
-    int capacity;
-    unordered_map<int, Node*> cache;
-    Node* head;
-    Node* tail;
-    
-    void addToHead(Node* node) {
-        node->prev = head;
-        node->next = head->next;
-        head->next->prev = node;
-        head->next = node;
-    }
-    
-    void removeNode(Node* node) {
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
-    }
-    
-    void moveToHead(Node* node) {
-        removeNode(node);
-        addToHead(node);
-    }
-    
-    Node* removeTail() {
-        Node* lastNode = tail->prev;
-        removeNode(lastNode);
-        return lastNode;
-    }
+int capacity;
+    list<pair<int, int>> cache;
+    unordered_map<int, list<pair<int, int>>::iterator> m;
 
 public:
-    LRUCache(int capacity) : capacity(capacity) {
-        head = new Node();
-        tail = new Node();
-        head->next = tail;
-        tail->prev = head;
+    LRUCache(int capacity) {
+        this->capacity = capacity;
     }
     
     int get(int key) {
-        if (cache.find(key) != cache.end()) {
-            Node* node = cache[key];
-            moveToHead(node);
-            return node->value;
+        if (m.find(key) == m.end()) {
+            return -1;
         }
-        return -1;
+        cache.splice(cache.begin(), cache, m[key]);
+        return m[key]->second;
     }
     
     void put(int key, int value) {
-        if (cache.find(key) != cache.end()) {
-            Node* node = cache[key];
-            node->value = value;
-            moveToHead(node);
-        } else {
-            Node* newNode = new Node(key, value);
-            
-            if (cache.size() >= capacity) {
-                Node* tail_node = removeTail();
-                cache.erase(tail_node->key);
-                delete tail_node;
-            }
-            
-            cache[key] = newNode;
-            addToHead(newNode);
+        if (m.find(key) != m.end()) {
+            m[key]->second = value;
+            cache.splice(cache.begin(), cache, m[key]);
+            return;
         }
+        
+        if (cache.size() == capacity) {
+            int d_key = cache.back().first;
+            cache.pop_back();
+            m.erase(d_key);
+        }
+        
+        cache.push_front({key, value});
+        m[key] = cache.begin();
     }
 };
 
