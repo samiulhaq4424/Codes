@@ -8,67 +8,38 @@
  * };
  */
 class Codec {
-public:
-    // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
+private:
+    void serializeHelper(TreeNode* root, string& s) {
         if (!root) {
-            return "";
+            s += "#,";
+            return;
         }
-        string str = "";
-        queue<TreeNode*> q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode* cur = q.front();
-            q.pop();
-            if (cur == NULL) {
-                str.append("#,");
-            } else {
-                str.append(to_string(cur->val) + ',');
-            }
-            if (cur != NULL) {
-                q.push(cur->left);
-                q.push(cur->right);
-            }
-        }
-        return str;
+        s += to_string(root->val) + ",";
+        serializeHelper(root->left, s);
+        serializeHelper(root->right, s);
     }
 
-    // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
-        if (data == "") {
-            return NULL;
-        }
-        string str = "";
-        stringstream s(data);
-        queue<TreeNode*> q;
+    TreeNode* deserializeHelper(stringstream& ss) {
+        string str;
+        if (!getline(ss, str, ',')) return nullptr;
+        if (str == "#") return nullptr;
 
-        getline(s, str, ',');
         TreeNode* node = new TreeNode(stoi(str));
-        q.push(node);
-
-        while (!q.empty()) {
-            TreeNode* cur = q.front();
-            q.pop();
-
-            getline(s, str, ',');
-            if (str == "#") {
-                cur->left = NULL;
-            } else {
-                TreeNode* node = new TreeNode(stoi(str));
-                cur->left = node;
-                q.push(node);
-            }
-
-            getline(s, str, ',');
-            if (str == "#") {
-                cur->right = NULL;
-            } else {
-                TreeNode* node = new TreeNode(stoi(str));
-                cur->right = node;
-                q.push(node);
-            }
-        }
+        node->left = deserializeHelper(ss);
+        node->right = deserializeHelper(ss);
         return node;
+    }
+
+public:
+    string serialize(TreeNode* root) {
+        string s = "";
+        serializeHelper(root, s);
+        return s;
+    }
+
+    TreeNode* deserialize(string data) {
+        stringstream ss(data);
+        return deserializeHelper(ss);
     }
 };
 
