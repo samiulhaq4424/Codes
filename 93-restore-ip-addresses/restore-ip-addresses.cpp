@@ -1,27 +1,28 @@
 class Solution {
-public:
-    void solve(string& s, vector<string>& v, int index, vector<string>& ans) {
-        int n = s.size(), m = v.size();
-        if (index == n && m == 4) {
-            ans.push_back(v[0] + "." + v[1] + "." + v[2] + "." + v[3]);
+    void backtrack(string& s, int idx, int dots, string current, vector<string>& ans) {
+        if (dots == 4) {
+            if (idx == s.length()) {
+                current.pop_back();
+                ans.push_back(current);
+            }
             return;
         }
-        if (index >= n || m > 4) return;
-        for (int i = 0; i < 3 && index + i < n; ++i) {
-            string str = s.substr(index, i + 1);
-            if (str[0] == '0' && i > 0) continue;
-            int num = stoi(str);
-            if (num >= 0 && num <= 255) {
-                v.push_back(str);
-                solve(s, v, index + i + 1, ans);
-                v.pop_back();
-            }
+
+        for (int len = 1; len <= 3; len++) {
+            if (idx + len > s.length()) break;
+
+            string part = s.substr(idx, len);
+            if ((part[0] == '0' && len > 1) || stoi(part) > 255) break;
+
+            backtrack(s, idx + len, dots + 1, current + part + ".", ans);
         }
     }
-    
+
+    public:
     vector<string> restoreIpAddresses(string s) {
-        vector<string> ans, v;
-        solve(s, v, 0, ans);
+        vector<string> ans;
+        if (s.length() < 4 || s.length() > 12) return ans;
+        backtrack(s, 0, 0, "", ans);
         return ans;
     }
 };
