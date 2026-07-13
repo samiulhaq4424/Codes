@@ -1,21 +1,22 @@
 class Solution {
-public:
-    vector<vector<int>> combine(int n, int k) {
-        vector<vector<int>> result;
-        vector<int> current;
-        backtrack(result, current, 1, n, k);
-        return result;
-    }
-private:
-    void backtrack(vector<vector<int>>& result, vector<int>& current, int start, int n, int k) {
+    void backtrack(int start, int n, int k, vector<int>& current, vector<vector<int>>& ans) {
         if (current.size() == k) {
-            result.push_back(current);
+            ans.push_back(current);
             return;
         }
-        for (int i = start; i <= n; i++) {
+
+        for (int i = start; i <= n - (k - current.size()) + 1; i++) {
             current.push_back(i);
-            backtrack(result, current, i + 1, n, k);
+            backtrack(i + 1, n, k, current, ans);
             current.pop_back();
         }
+    }
+
+    public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> ans;
+        vector<int> current;
+        backtrack(1, n, k, current, ans);
+        return ans;
     }
 };
