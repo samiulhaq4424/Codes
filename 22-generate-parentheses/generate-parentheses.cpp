@@ -1,30 +1,22 @@
 class Solution {
-public:
-    void helper(int open, int close, string &str, vector<string> &ans) {
-        if(open==0 && close==0){
-            ans.push_back(str);
+    void backtrack(vector<string>& ans, string current, int open, int close, int max) {
+        if (current.length() == max * 2) {
+            ans.push_back(current);
             return;
         }
 
-        if(open!=0){
-            str.push_back('(');
-            helper(open-1, close, str, ans);
-            str.pop_back();
+        if (open < max) {
+            backtrack(ans, current + "(", open + 1, close, max);
         }
-        if(close>open){
-            str.push_back(')');
-            helper(open, close-1, str, ans);
-            str.pop_back();
+        if (close < open) {
+            backtrack(ans, current + ")", open, close + 1, max);
         }
     }
+
+public:
     vector<string> generateParenthesis(int n) {
-        string str = "";
         vector<string> ans;
-        if(n<=0){
-            return ans;
-        }
-        int open=n,close=n;
-        helper(open, close, str, ans);
+        backtrack(ans, "", 0, 0, n);
         return ans;
     }
 };
