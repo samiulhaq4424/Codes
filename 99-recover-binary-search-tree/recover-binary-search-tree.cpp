@@ -10,30 +10,29 @@
  * };
  */
 class Solution {
-public:
-    void recoverTree(TreeNode* root) {
-        TreeNode *first = nullptr, *second = nullptr, *prev = nullptr;
-        
-        function<void(TreeNode*)> inorder = [&](TreeNode* node) {
-            if (!node) return;
-            
-            inorder(node->left);
-            
-            if (prev && prev->val > node->val) {
-                if (!first) {
-                    first = prev;
-                    second = node;
-                } else {
-                    second = node;
-                }
+    TreeNode* first = nullptr;
+    TreeNode* second = nullptr;
+    TreeNode* prev = nullptr;
+
+    void inorder(TreeNode* root) {
+        if (!root) return;
+
+        inorder(root->left);
+
+        if (prev && prev->val > root->val) {
+            if (!first) {
+                first = prev;
             }
-            prev = node;
-            
-            inorder(node->right);
-        };
-        
+            second = root;
+        }
+        prev = root;
+
+        inorder(root->right);
+    }
+
+    public:
+    void recoverTree(TreeNode* root) {
         inorder(root);
-        
         if (first && second) {
             swap(first->val, second->val);
         }
