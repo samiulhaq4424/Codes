@@ -2,9 +2,8 @@ class Solution {
 public:
     int singleNumber(vector<int>& nums) {
         int ans = 0;
-        for(auto it : nums)
-        {
-            ans = ans^it;
+        for (int num : nums) {
+            ans ^= num;
         }
         return ans;
     }
