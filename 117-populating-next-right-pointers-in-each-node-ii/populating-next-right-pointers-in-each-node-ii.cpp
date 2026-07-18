@@ -19,40 +19,27 @@ public:
 class Solution {
 public:
     Node* connect(Node* root) {
-        if (!root) return root;
-        
-        Node* level_start = root;
-        
-        while (level_start) {
-            Node* curr = level_start;
-            Node* next_level_start = nullptr;
-            Node* prev = nullptr;
-            
+        Node* dummy = new Node(0);
+        Node* curr = root;
+
+        while (curr) {
+            Node* tail = dummy;
             while (curr) {
                 if (curr->left) {
-                    if (prev) {
-                        prev->next = curr->left;
-                    } else {
-                        next_level_start = curr->left;
-                    }
-                    prev = curr->left;
+                    tail->next = curr->left;
+                    tail = tail->next;
                 }
-                
                 if (curr->right) {
-                    if (prev) {
-                        prev->next = curr->right;
-                    } else {
-                        next_level_start = curr->right;
-                    }
-                    prev = curr->right;
+                    tail->next = curr->right;
+                    tail = tail->next;
                 }
-                
                 curr = curr->next;
             }
-            
-            level_start = next_level_start;
+            curr = dummy->next;
+            dummy->next = nullptr;
         }
-        
+
+        delete dummy;
         return root;
     }
 };
