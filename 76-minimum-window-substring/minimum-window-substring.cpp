@@ -1,48 +1,47 @@
 class Solution {
 public:
     string minWindow(string s, string t) {
-        int i=0,j=0;
-        int n=s.size();
-        int miniLen=INT_MAX, startIndx=-1;
-        unordered_map<char,int> mp;
+        if (s.empty() || t.empty()) return "";
 
-        for(auto it : t){
-            mp[it]++;
-        }
-        int count = mp.size();
+        vector<int> tCount(128, 0);
+        for (char c : t) tCount[c]++;
 
-        while(j<n) {
-            if(mp.find(s[j]) != mp.end()){
-                --mp[s[j]];
-                if(mp[s[j]] == 0){
-                    --count;
+        vector<int> windowCount(128, 0);
+        int required = 0;
+        for (int count : tCount) {
+            if (count > 0) required++;
+        }
+
+        int left = 0, right = 0;
+        int formed = 0;
+        int minLen = INT_MAX;
+        int startIdx = 0;
+
+        while (right < s.length()) {
+            char c = s[right];
+            windowCount[c]++;
+
+            if (tCount[c] > 0 && windowCount[c] == tCount[c]) {
+                formed++;
+            }
+
+            while (left <= right && formed == required) {
+                c = s[left];
+
+                if (right - left + 1 < minLen) {
+                    minLen = right - left + 1;
+                    startIdx = left;
                 }
-            }
-            if(count>0){
-                ++j;
-            }
-            else if(count == 0){
-                while(count == 0){
-                    if(j-i+1 < miniLen){
-                        startIndx = i;
-                        miniLen = j-i+1;
-                    }
-                    if(mp.find(s[i]) != mp.end()){
-                        mp[s[i]]++;
-                        if(mp[s[i]]==1){
-                            ++count;
-                        }
-                    }
-                    ++i;
+
+                windowCount[c]--;
+                if (tCount[c] > 0 && windowCount[c] < tCount[c]) {
+                    formed--;
                 }
-                ++j;
+                left++;
             }
+            right++;
         }
-        if(startIndx == -1){
-            return "";
-        }
-        else{
-            return s.substr(startIndx,miniLen);
-        }
+
+        return minLen == INT_MAX ? "" : s.substr(startIdx, minLen);
     }
 };
