@@ -1,27 +1,24 @@
 class Solution {
 public:
-    int maxChunksToSorted(vector<int>& nums) {
-        int size = nums.size();
-        vector<long long> prefixMax(size), suffixMin(size);
+    int maxChunksToSorted(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> minRight(n);
 
-        prefixMax[0] = nums[0];
-        for (int i = 1; i < size; ++i) {
-            prefixMax[i] = max(prefixMax[i - 1], static_cast<long long>(nums[i]));
-        }
-        suffixMin[size - 1] = nums[size - 1];
-        for (int i = size - 2; i >= 0; --i) {
-            suffixMin[i] = min(suffixMin[i + 1], static_cast<long long>(nums[i]));
+        minRight[n - 1] = arr[n - 1];
+        for (int i = n - 2; i >= 0; --i) {
+            minRight[i] = min(minRight[i + 1], arr[i]);
         }
 
         int chunks = 0;
-        for (int i = 0; i < size; ++i) {
-            long long maxBefore = (i > 0 ? prefixMax[i - 1] : LLONG_MIN);
-            long long minAfter = suffixMin[i];
+        int maxLeft = INT_MIN;
 
-            if (maxBefore <= minAfter) {
+        for (int i = 0; i < n - 1; ++i) {
+            maxLeft = max(maxLeft, arr[i]);
+            if (maxLeft <= minRight[i + 1]) {
                 chunks++;
             }
         }
-        return chunks;
+
+        return chunks + 1;
     }
 };
