@@ -2,13 +2,17 @@ class Solution {
 public:
     string toHex(int num) {
         if (num == 0) return "0";
-        unsigned int n = num;  
-        string hex = "";
-        string digits = "0123456789abcdef";
+
+        string hexDigits = "0123456789abcdef";
+        string result = "";
+        unsigned int n = num;
+
         while (n > 0) {
-            hex = digits[n % 16] + hex;
-            n /= 16;
+            result += hexDigits[n & 0xF];
+            n >>= 4;
         }
-        return hex;
+
+        reverse(result.begin(), result.end());
+        return result;
     }
 };
