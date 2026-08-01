@@ -10,23 +10,22 @@
  * };
  */
 class Solution {
-public:
-    int helper(TreeNode* root, int &diameter){
-        if(!root){
-            return 0;
-        }
-        int lh = helper(root->left, diameter);
-        int rh = helper(root->right, diameter);
-        diameter = max(diameter, lh+rh);
-        return 1+max(lh,rh);
+    int maxDiameter = 0;
+
+    int getHeight(TreeNode* root) {
+        if (!root) return 0;
+
+        int leftHeight = getHeight(root->left);
+        int rightHeight = getHeight(root->right);
+
+        maxDiameter = max(maxDiameter, leftHeight + rightHeight);
+
+        return 1 + max(leftHeight, rightHeight);
     }
 
+    public:
     int diameterOfBinaryTree(TreeNode* root) {
-        if(!root){
-            return 0;
-        }
-        int diameter = 0;
-        helper(root, diameter);
-        return diameter;
+        getHeight(root);
+        return maxDiameter;
     }
 };
