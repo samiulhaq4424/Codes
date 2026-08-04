@@ -2,24 +2,27 @@ class Solution {
 public:
     int numDecodings(string s) {
         if (s.empty() || s[0] == '0') return 0;
-        
+
         int n = s.length();
-        vector<int> dp(n + 1, 0);
-        dp[0] = 1;
-        dp[1] = 1;
-        
-        for (int i = 2; i <= n; i++) {
-            int oneDigit = stoi(s.substr(i - 1, 1));
-            int twoDigits = stoi(s.substr(i - 2, 2));
-            
-            if (oneDigit >= 1 && oneDigit <= 9) {
-                dp[i] += dp[i - 1];
+        int prev2 = 1;
+        int prev1 = 1;
+
+        for (int i = 1; i < n; ++i) {
+            int current = 0;
+
+            if (s[i] != '0') {
+                current += prev1;
             }
-            if (twoDigits >= 10 && twoDigits <= 26) {
-                dp[i] += dp[i - 2];
+
+            int twoDigit = (s[i - 1] - '0') * 10 + (s[i] - '0');
+            if (twoDigit >= 10 && twoDigit <= 26) {
+                current += prev2;
             }
+
+            prev2 = prev1;
+            prev1 = current;
         }
-        
-        return dp[n];
+
+        return prev1;
     }
 };
